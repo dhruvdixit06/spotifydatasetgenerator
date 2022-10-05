@@ -1,0 +1,1 @@
+web: sh setup.sh && streamlit run Spotify_Dataset_Generator.py
