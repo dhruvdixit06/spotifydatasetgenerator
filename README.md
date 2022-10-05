@@ -3,7 +3,7 @@
 ## About Spotify Dataset Generator:-
 
 ##### Whenever creating an app or a software, dataset is the most required thing for researches, data analysis, building models, recommendation systems etc. 
-##### This tool is helpful to all the creaters dedicated to music and are in need of Dataset generated via Spotify.
+##### This tool is helpful to all the creators dedicated to music and are in need of Dataset generated via Spotify.
 
 ## Requirements:-
 
