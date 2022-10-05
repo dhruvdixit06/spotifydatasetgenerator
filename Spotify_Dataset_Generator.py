@@ -5,7 +5,7 @@ st.set_page_config(page_title="About", page_icon="🎶",layout="wide",)
 st.header('About Spotify Dataset Generator')
 about= '''
 Whenever creating an app or a software, dataset is the most required thing for researches, data analysis, building models, recommendation systems etc. 
-\nThis tool is helpful to all the creaters dedicated to music and are in need of Dataset generated via Spotify.
+\nThis tool is helpful to all the creators dedicated to music and are in need of Dataset generated via Spotify.
 '''
 st.markdown(about,unsafe_allow_html=True)
 
