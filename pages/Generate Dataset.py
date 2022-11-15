@@ -25,13 +25,26 @@ def Search(q,client_id_in,client_secret_in):
     spotify_albums['valence'] = []
     spotify_albums['popularity'] = []
     spotify_albums['track name']=[]
+    spotify_albums['duration_ms']=[]
+    spotify_albums['key']=[]
+    spotify_albums['mode']=[]
+    spotify_albums['track image']=[]
+    spotify_albums['song_url']=[]
+    spotify_albums['album type']=[]
+    spotify_albums['album name']=[]
     results = sp.search(q,limit=None)
     for idx, track in enumerate(results['tracks']['items']):
         song_id = results['tracks']['items'][idx]['id']
-        artist = track['artists'][0]['name']
+        artist=[]
+        pop = sp.track(song_id)
+        for i in pop["artists"]:
+            artist.append(i['name'])
         #pull audio features per track
         features = sp.audio_features(song_id) 
         #Append to relevant key-value
+        spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+        spotify_albums['key'].append(features[0]['key'])
+        spotify_albums['mode'].append(features[0]['mode'])
         spotify_albums['acousticness'].append(features[0]['acousticness'])
         spotify_albums['danceability'].append(features[0]['danceability'])
         spotify_albums['energy'].append(features[0]['energy'])
@@ -42,9 +55,12 @@ def Search(q,client_id_in,client_secret_in):
         spotify_albums['tempo'].append(features[0]['tempo'])
         spotify_albums['valence'].append(features[0]['valence'])
         #popularity is stored elsewhere
-        pop = sp.track(song_id)
         spotify_albums['popularity'].append(pop['popularity'])
         #etc
+        spotify_albums['song_url'].append(pop['external_urls']['spotify'])
+        spotify_albums['album name'].append(pop['album']['name'])
+        spotify_albums['album type'].append(pop['album']['album_type'])
+        spotify_albums['track image'].append(pop['album']['images'][0]['url'])
         spotify_albums['song_uri'].append("spotify:track:"+song_id)
         spotify_albums['song_id'].append(song_id)
         spotify_albums['track name'].append(track['name'])
@@ -64,6 +80,13 @@ def Search(q,client_id_in,client_secret_in):
     dic_df['tempo'] = []
     dic_df['valence'] = []
     dic_df['popularity'] = []
+    dic_df['duration_ms']=[]
+    dic_df['key']=[]
+    dic_df['mode']=[]
+    dic_df['track image']=[]
+    dic_df['album type']=[]
+    dic_df['album name']=[]
+    dic_df['song_url']=[]
     for t in spotify_albums: 
             dic_df[t].extend(spotify_albums[t])
     dataframe = pd.DataFrame.from_dict(dic_df)
@@ -87,13 +110,27 @@ def Playlist(q,client_id_in,client_secret_in):
         spotify_albums['valence'] = []
         spotify_albums['popularity'] = []
         spotify_albums['track name']=[]
+        spotify_albums['duration_ms']=[]
+        spotify_albums['key']=[]
+        spotify_albums['mode']=[]
+        spotify_albums['track image']=[]
+        spotify_albums['song_url']=[]
+        spotify_albums['album type']=[]
+        spotify_albums['album name']=[]
         results=sp.playlist_tracks(q)
         for track in results['items']:
             song_id = track['track']['id']
-            artist = track["track"]["artists"][0]["name"]
+            artist=[]
+            song_id = track['track']['id']
+            pop = sp.track(song_id)
+            for i in pop["artists"]:
+                artist.append(i['name'])
             #pull audio features per track
             features = sp.audio_features(song_id) 
             #Append to relevant key-value
+            spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+            spotify_albums['key'].append(features[0]['key'])
+            spotify_albums['mode'].append(features[0]['mode'])
             spotify_albums['acousticness'].append(features[0]['acousticness'])
             spotify_albums['danceability'].append(features[0]['danceability'])
             spotify_albums['energy'].append(features[0]['energy'])
@@ -104,9 +141,12 @@ def Playlist(q,client_id_in,client_secret_in):
             spotify_albums['tempo'].append(features[0]['tempo'])
             spotify_albums['valence'].append(features[0]['valence'])
             #popularity is stored elsewhere
-            pop = sp.track(song_id)
             spotify_albums['popularity'].append(pop['popularity'])
             #etc
+            spotify_albums['song_url'].append(pop['external_urls']['spotify'])
+            spotify_albums['album name'].append(pop['album']['name'])
+            spotify_albums['album type'].append(pop['album']['album_type'])
+            spotify_albums['track image'].append(pop['album']['images'][0]['url'])
             spotify_albums['song_uri'].append("spotify:track:"+song_id)
             spotify_albums['song_id'].append(song_id)
             spotify_albums['track name'].append(track['track']['name'])
@@ -126,6 +166,13 @@ def Playlist(q,client_id_in,client_secret_in):
         dic_df['tempo'] = []
         dic_df['valence'] = []
         dic_df['popularity'] = []
+        dic_df['duration_ms']=[]
+        dic_df['key']=[]
+        dic_df['mode']=[]
+        dic_df['track image']=[]
+        dic_df['album type']=[]
+        dic_df['album name']=[]
+        dic_df['song_url']=[]
         for t in spotify_albums: 
                 dic_df[t].extend(spotify_albums[t])
         dataframe = pd.DataFrame.from_dict(dic_df)
@@ -149,10 +196,20 @@ def Album(q,client_id_in,client_secret_in):
         spotify_albums['valence'] = []
         spotify_albums['popularity'] = []
         spotify_albums['track name']=[]
+        spotify_albums['duration_ms']=[]
+        spotify_albums['key']=[]
+        spotify_albums['mode']=[]
+        spotify_albums['track image']=[]
+        spotify_albums['song_url']=[]
+        spotify_albums['album type']=[]
+        spotify_albums['album name']=[]
         results=sp.album_tracks(q)
         for track in results['items']:
             song_id = track['id']
-            artist = track["artists"][0]["name"]
+            artist=[]
+            pop = sp.track(song_id)
+            for i in pop["artists"]:
+                artist.append(i['name'])
             #pull audio features per track
             features = sp.audio_features(song_id) 
             #Append to relevant key-value
@@ -165,10 +222,16 @@ def Album(q,client_id_in,client_secret_in):
             spotify_albums['speechiness'].append(features[0]['speechiness'])
             spotify_albums['tempo'].append(features[0]['tempo'])
             spotify_albums['valence'].append(features[0]['valence'])
+            spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+            spotify_albums['key'].append(features[0]['key'])
+            spotify_albums['mode'].append(features[0]['mode'])
             #popularity is stored elsewhere
-            pop = sp.track(song_id)
             spotify_albums['popularity'].append(pop['popularity'])
             #etc
+            spotify_albums['song_url'].append(pop['external_urls']['spotify'])
+            spotify_albums['album name'].append(pop['album']['name'])
+            spotify_albums['album type'].append(pop['album']['album_type'])
+            spotify_albums['track image'].append(pop['album']['images'][0]['url'])
             spotify_albums['song_uri'].append("spotify:track:"+song_id)
             spotify_albums['song_id'].append(song_id)
             spotify_albums['track name'].append(track['name'])
@@ -188,6 +251,13 @@ def Album(q,client_id_in,client_secret_in):
         dic_df['tempo'] = []
         dic_df['valence'] = []
         dic_df['popularity'] = []
+        dic_df['duration_ms']=[]
+        dic_df['key']=[]
+        dic_df['mode']=[]
+        dic_df['track image']=[]
+        dic_df['album type']=[]
+        dic_df['album name']=[]
+        dic_df['song_url']=[]
         for t in spotify_albums: 
                 dic_df[t].extend(spotify_albums[t])
         dataframe = pd.DataFrame.from_dict(dic_df)
@@ -211,15 +281,30 @@ def Artist(q,client_id_in,client_secret_in):
         spotify_albums['valence'] = []
         spotify_albums['popularity'] = []
         spotify_albums['track name']=[]
+        spotify_albums['duration_ms']=[]
+        spotify_albums['key']=[]
+        spotify_albums['mode']=[]
+        spotify_albums['track image']=[]
+        spotify_albums['song_url']=[]
+        spotify_albums['album type']=[]
+        spotify_albums['album name']=[]
         result = sp.search(q, type='artist')
         id = result['artists']['items'][0]['id']
+        res2=sp.artist(id)
+        name=res2['name']
+        print(name)
         albums = sp.artist_albums(id)
         for album in albums['items']:
-            album_id = albums['items'][0]['id']
+            album_id = album['id']
             results=sp.album_tracks(album_id)
             for track in results['items']:
                 song_id = track['id']
-                artist = track["artists"][0]["name"]
+                artist=[]
+                pop = sp.track(song_id)
+                for i in pop["artists"]:
+                    artist.append(i['name'])
+                if name not in artist:
+                    continue
                 #pull audio features per track
                 features = sp.audio_features(song_id) 
                 #Append to relevant key-value
@@ -232,10 +317,16 @@ def Artist(q,client_id_in,client_secret_in):
                 spotify_albums['speechiness'].append(features[0]['speechiness'])
                 spotify_albums['tempo'].append(features[0]['tempo'])
                 spotify_albums['valence'].append(features[0]['valence'])
+                spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+                spotify_albums['key'].append(features[0]['key'])
+                spotify_albums['mode'].append(features[0]['mode'])
                 #popularity is stored elsewhere
-                pop = sp.track(song_id)
                 spotify_albums['popularity'].append(pop['popularity'])
                 #etc
+                spotify_albums['song_url'].append(pop['external_urls']['spotify'])
+                spotify_albums['album name'].append(pop['album']['name'])
+                spotify_albums['album type'].append(pop['album']['album_type'])
+                spotify_albums['track image'].append(pop['album']['images'][0]['url'])
                 spotify_albums['song_uri'].append("spotify:track:"+song_id)
                 spotify_albums['song_id'].append(song_id)
                 spotify_albums['track name'].append(track['name'])
@@ -255,6 +346,13 @@ def Artist(q,client_id_in,client_secret_in):
         dic_df['tempo'] = []
         dic_df['valence'] = []
         dic_df['popularity'] = []
+        dic_df['duration_ms']=[]
+        dic_df['key']=[]
+        dic_df['mode']=[]
+        dic_df['track image']=[]
+        dic_df['album type']=[]
+        dic_df['album name']=[]
+        dic_df['song_url']=[]
         for t in spotify_albums: 
                 dic_df[t].extend(spotify_albums[t])
         dataframe = pd.DataFrame.from_dict(dic_df)
