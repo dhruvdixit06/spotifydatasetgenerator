@@ -2,10 +2,24 @@ import streamlit as st
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
+from datetime import timedelta
 
 st.set_page_config(page_title="Produce Dataset", page_icon="📑",layout="wide")
 st.title(" Produce Dataset")
 
+def convertMillis(duration):
+    '''seconds=(duration/1000)%60
+    minutes=(duration/(1000*60))%60
+    hours=(duration/(1000*60*60))%24'''
+    x = str(timedelta(milliseconds=duration))
+    t=x.split(":")
+    print(x)
+    print(t)
+    if int(t[0])==0:
+        duration="{}:{}".format(round(float(t[1])),round(float(t[2])))
+    else:
+        duration="{}:{}:{}".format(round(float(t[0])),round(float(t[1])),round(float(t[2])))
+    return duration
 
 def Search(q,client_id_in,client_secret_in):
     sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id_in,
@@ -42,7 +56,9 @@ def Search(q,client_id_in,client_secret_in):
         #pull audio features per track
         features = sp.audio_features(song_id) 
         #Append to relevant key-value
-        spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+        duration=features[0]['duration_ms']
+        duration=convertMillis(duration)
+        spotify_albums['duration_ms'].append(duration)
         spotify_albums['key'].append(features[0]['key'])
         spotify_albums['mode'].append(features[0]['mode'])
         spotify_albums['acousticness'].append(features[0]['acousticness'])
@@ -126,7 +142,9 @@ def Song(q,client_id_in,client_secret_in):
         #pull audio features per track
         features = sp.audio_features(song_id) 
         #Append to relevant key-value
-        spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+        duration=features[0]['duration_ms']
+        duration=convertMillis(duration)
+        spotify_albums['duration_ms'].append(duration)
         spotify_albums['key'].append(features[0]['key'])
         spotify_albums['mode'].append(features[0]['mode'])
         spotify_albums['acousticness'].append(features[0]['acousticness'])
@@ -212,7 +230,9 @@ def Playlist(q,client_id_in,client_secret_in):
             #pull audio features per track
             features = sp.audio_features(song_id) 
             #Append to relevant key-value
-            spotify_albums['duration_ms'].append(features[0]['duration_ms'])
+            duration=features[0]['duration_ms']
+            duration=convertMillis(duration)
+            spotify_albums['duration_ms'].append(duration)
             spotify_albums['key'].append(features[0]['key'])
             spotify_albums['mode'].append(features[0]['mode'])
             spotify_albums['acousticness'].append(features[0]['acousticness'])
@@ -297,6 +317,9 @@ def Album(q,client_id_in,client_secret_in):
             #pull audio features per track
             features = sp.audio_features(song_id) 
             #Append to relevant key-value
+            duration=features[0]['duration_ms']
+            duration=convertMillis(duration)
+            spotify_albums['duration_ms'].append(duration)
             spotify_albums['acousticness'].append(features[0]['acousticness'])
             spotify_albums['danceability'].append(features[0]['danceability'])
             spotify_albums['energy'].append(features[0]['energy'])
@@ -306,7 +329,6 @@ def Album(q,client_id_in,client_secret_in):
             spotify_albums['speechiness'].append(features[0]['speechiness'])
             spotify_albums['tempo'].append(features[0]['tempo'])
             spotify_albums['valence'].append(features[0]['valence'])
-            spotify_albums['duration_ms'].append(features[0]['duration_ms'])
             spotify_albums['key'].append(features[0]['key'])
             spotify_albums['mode'].append(features[0]['mode'])
             #popularity is stored elsewhere
@@ -392,6 +414,9 @@ def Artist(q,client_id_in,client_secret_in):
                 #pull audio features per track
                 features = sp.audio_features(song_id) 
                 #Append to relevant key-value
+                duration=features[0]['duration_ms']
+                duration=convertMillis(duration)
+                spotify_albums['duration_ms'].append(duration)
                 spotify_albums['acousticness'].append(features[0]['acousticness'])
                 spotify_albums['danceability'].append(features[0]['danceability'])
                 spotify_albums['energy'].append(features[0]['energy'])
@@ -401,7 +426,6 @@ def Artist(q,client_id_in,client_secret_in):
                 spotify_albums['speechiness'].append(features[0]['speechiness'])
                 spotify_albums['tempo'].append(features[0]['tempo'])
                 spotify_albums['valence'].append(features[0]['valence'])
-                spotify_albums['duration_ms'].append(features[0]['duration_ms'])
                 spotify_albums['key'].append(features[0]['key'])
                 spotify_albums['mode'].append(features[0]['mode'])
                 #popularity is stored elsewhere
